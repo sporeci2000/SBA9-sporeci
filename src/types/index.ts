@@ -14,6 +14,8 @@ export interface Task {
 
 //TaskFilter interface
 export interface TaskFilter {
+    onFilterChange: (filters: {
         status?: TaskStatus;
-        priority?: TaskPriority;
-    }
+        priority?: 'low' | 'medium' | 'high';
+    }) => void;
+}
