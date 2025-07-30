@@ -6,21 +6,28 @@ import { TaskFilter } from '../TaskFilter/TaskFilter';
 export const Dashboard: React.FC = () => {
 
     console.log('Rendering Dashboard');
-    
+
     const [tasks, setTasks] = useState<Task[]>([]);
     const [filter, setFilter] = useState<{ status?: TaskStatus; priority?: TaskPriority }>({});
 
-    const addTask = (data: { title: string; priority: TaskPriority; status: TaskStatus }) => {
+    const addTask = (data: {
+        title: string;
+        priority: TaskPriority;
+        status: TaskStatus;
+        description: string;
+        dueDate: string;
+    }) => {
         const newTask: Task = {
             id: Date.now().toString(),
             title: data.title,
             priority: data.priority,
             status: data.status,
-            description: '',
-            dueDate: '',
+            description: data.description,
+            dueDate: data.dueDate,
         };
         setTasks((prev) => [...prev, newTask]);
     };
+
 
     const handleFilterChange = (filters: { status?: TaskStatus; priority?: TaskPriority }) => {
         setFilter(filters);
