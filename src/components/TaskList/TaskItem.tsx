@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Task } from '../../types';
+import './TaskItem.css';
 
 interface TaskItemProps {
     task: Task;
@@ -8,7 +9,7 @@ interface TaskItemProps {
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, onDelete, onEdit }) => (
-    <li>
+    <li className={`${task.priority} ${task.status}`}>
         <strong>{task.title}</strong> — {task.status} — {task.priority}
         <br />
         Description: {task.description || 'No description'}

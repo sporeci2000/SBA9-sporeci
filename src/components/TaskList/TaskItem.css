@@ -1,0 +1,33 @@
+li {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-family: sans-serif;
+}
+
+/* Priority styles */
+.low {
+    border-left: 5px solid green;
+}
+
+.medium {
+    border-left: 5px solid orange;
+}
+
+.high {
+    border-left: 5px solid red;
+}
+
+/* Status styles */
+.pending {
+    background-color: #fff3cd;
+}
+
+.in-progress {
+    background-color: #cce5ff;
+}
+
+.completed {
+    background-color: #d4edda;
+    text-decoration: line-through;
+}

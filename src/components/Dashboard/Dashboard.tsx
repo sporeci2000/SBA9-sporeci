@@ -15,44 +15,32 @@ export const Dashboard: React.FC = () => {
     const [filter, setFilter] = useState<{ status?: TaskStatus; priority?: TaskPriority }>({});
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<'dueDate' | 'priority' | 'status' | ''>('');
-    const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     }, [tasks]);
 
-    const saveTask = (data: {
-        id?: string;
+    const addTask = (data: {
         title: string;
         priority: TaskPriority;
         status: TaskStatus;
         description: string;
         dueDate: string;
     }) => {
-        if (data.id) {
-            setTasks((prev) =>
-                prev.map((task) => (task.id === data.id ? { ...task, ...data } : task))
-            );
-            setTaskToEdit(null);
-        } else {
-            const newTask: Task = {
-                id: Date.now().toString(),
-                title: data.title,
-                priority: data.priority,
-                status: data.status,
-                description: data.description,
-                dueDate: data.dueDate,
-            };
-            setTasks((prev) => [...prev, newTask]);
-        }
+        const newTask: Task = {
+            id: Date.now().toString(),
+            title: data.title,
+            priority: data.priority,
+            status: data.status,
+            description: data.description,
+            dueDate: data.dueDate,
+        };
+        setTasks((prev) => [...prev, newTask]);
     };
 
     const deleteTask = (id: string) => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
-        if (taskToEdit?.id === id) {
-            setTaskToEdit(null); // Clear edit if deleted
-        }
     };
 
     const handleFilterChange = (filters: { status?: TaskStatus; priority?: TaskPriority }) => {
@@ -85,6 +73,12 @@ export const Dashboard: React.FC = () => {
         }
         return 0;
     });
+
+    // Statistics calculation
+    const totalTasks = filteredTasks.length;
+    const completedTasks = filteredTasks.filter(t => t.status === 'completed').length;
+    const pendingTasks = filteredTasks.filter(t => t.status === 'pending').length;
+    const inProgressTasks = filteredTasks.filter(t => t.status === 'in-progress').length;
 
     // Export tasks as JSON file
     const handleExport = () => {
@@ -120,15 +114,12 @@ export const Dashboard: React.FC = () => {
         e.target.value = '';
     };
 
-    const handleEdit = (task: Task) => {
-        setTaskToEdit(task);
-    };
-
     return (
         <div>
             <h1>Task Dashboard</h1>
-            <TaskForm onAddTask={saveTask} taskToEdit={taskToEdit} />
+            <TaskForm onAddTask={addTask} />
             <TaskFilter onFilterChange={handleFilterChange} />
+
             <input
                 type="text"
                 placeholder="Search tasks..."
@@ -136,6 +127,7 @@ export const Dashboard: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{ marginTop: '1rem', padding: '0.5rem', width: '100%' }}
             />
+
             <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
@@ -161,7 +153,25 @@ export const Dashboard: React.FC = () => {
                 />
             </div>
 
-            <TaskList tasks={sortedTasks} onDelete={deleteTask} onEdit={handleEdit} />
+            {/* Task Statistics */}
+            <div
+                style={{
+                    maxWidth: 600,
+                    margin: '2rem auto',
+                    padding: '1rem',
+                    background: '#f1f1f1',
+                    borderRadius: 8,
+                    fontSize: '1rem',
+                }}
+            >
+                <h3>Task Statistics</h3>
+                <p>Total Tasks: {totalTasks}</p>
+                <p>Completed: {completedTasks}</p>
+                <p>Pending: {pendingTasks}</p>
+                <p>In Progress: {inProgressTasks}</p>
+            </div>
+
+            <TaskList tasks={sortedTasks} onDelete={deleteTask} onEdit={() => { }} />
         </div>
     );
 };
