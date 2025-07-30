@@ -4,9 +4,10 @@ import type { Task } from '../../types';
 interface TaskItemProps {
     task: Task;
     onDelete: (id: string) => void;
+    onEdit: (task: Task) => void; // new prop
 }
 
-export const TaskItem: React.FC<TaskItemProps> = ({ task, onDelete }) => (
+export const TaskItem: React.FC<TaskItemProps> = ({ task, onDelete, onEdit }) => (
     <li>
         <strong>{task.title}</strong> — {task.status} — {task.priority}
         <br />
@@ -14,6 +15,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onDelete }) => (
         <br />
         Due Date: {task.dueDate || 'No due date'}
         <br />
-        <button onClick={() => onDelete(task.id)}>Delete</button>
+        <button onClick={() => onEdit(task)}>Edit</button>
+        <button onClick={() => onDelete(task.id)} style={{ marginLeft: '10px' }}>
+            Delete
+        </button>
     </li>
 );
