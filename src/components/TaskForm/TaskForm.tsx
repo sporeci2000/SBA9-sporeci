@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import type { Task, TaskPriority, TaskStatus } from '../../types';
+import type { TaskPriority, TaskStatus, Task } from '../../types';
 
 interface TaskFormProps {
-    onAddTask: (task: Omit<Task, 'id'>) => void;
-    onUpdateTask?: (task: Task) => void;
-    editingTask?: Task | null;
-    cancelEdit?: () => void;
+    onAddTask: (task: {
+        id?: string;
+        title: string;
+        priority: TaskPriority;
+        status: TaskStatus;
+        description: string;
+        dueDate: string;
+    }) => void;
+    taskToEdit?: Task | null;
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({
-    onAddTask,
-    onUpdateTask,
-    editingTask,
-    cancelEdit,
-}) => {
+export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, taskToEdit }) => {
     const [title, setTitle] = useState('');
     const [priority, setPriority] = useState<TaskPriority>('medium');
     const [status, setStatus] = useState<TaskStatus>('pending');
@@ -21,17 +21,15 @@ export const TaskForm: React.FC<TaskFormProps> = ({
     const [dueDate, setDueDate] = useState('');
     const [error, setError] = useState('');
 
-    // When editingTask changes, update form fields
     useEffect(() => {
-        if (editingTask) {
-            setTitle(editingTask.title);
-            setPriority(editingTask.priority);
-            setStatus(editingTask.status);
-            setDescription(editingTask.description);
-            setDueDate(editingTask.dueDate);
+        if (taskToEdit) {
+            setTitle(taskToEdit.title);
+            setPriority(taskToEdit.priority);
+            setStatus(taskToEdit.status);
+            setDescription(taskToEdit.description);
+            setDueDate(taskToEdit.dueDate);
             setError('');
         } else {
-            // Reset form if no task editing
             setTitle('');
             setPriority('medium');
             setStatus('pending');
@@ -39,7 +37,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             setDueDate('');
             setError('');
         }
-    }, [editingTask]);
+    }, [taskToEdit]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,27 +47,23 @@ export const TaskForm: React.FC<TaskFormProps> = ({
             return;
         }
 
-        if (editingTask && onUpdateTask) {
-            onUpdateTask({
-                id: editingTask.id,
-                title,
-                priority,
-                status,
-                description,
-                dueDate,
-            });
-        } else {
-            onAddTask({ title, priority, status, description, dueDate });
-        }
+        onAddTask({
+            id: taskToEdit?.id,
+            title,
+            priority,
+            status,
+            description,
+            dueDate,
+        });
 
-        if (!editingTask) {
-            // Reset only if adding new task
+        if (!taskToEdit) {
             setTitle('');
             setPriority('medium');
             setStatus('pending');
             setDescription('');
             setDueDate('');
         }
+        setError('');
     };
 
     return (
@@ -100,14 +94,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({
                 <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
             </select>
-
-            <button type="submit">{editingTask ? 'Save Task' : 'Add Task'}</button>
-            {editingTask && cancelEdit && (
-                <button type="button" onClick={cancelEdit} style={{ marginLeft: '10px' }}>
-                    Cancel
-                </button>
-            )}
-
+            <button type="submit">{taskToEdit ? 'Update Task' : 'Add Task'}</button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
     );

@@ -1,81 +1,167 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Task, TaskStatus, TaskPriority } from '../../types';
 import { TaskForm } from '../TaskForm/TaskForm';
 import { TaskFilter } from '../TaskFilter/TaskFilter';
 import { TaskList } from '../TaskList/TaskList';
 
-const STORAGE_KEY = 'task_dashboard_tasks';
+const STORAGE_KEY = 'taskManagerTasks';
 
 export const Dashboard: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
+    const [tasks, setTasks] = useState<Task[]>(() => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : [];
+    });
+
     const [filter, setFilter] = useState<{ status?: TaskStatus; priority?: TaskPriority }>({});
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState<'dueDate' | 'priority' | 'status' | ''>('');
+    const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Load tasks from localStorage on mount
-    useEffect(() => {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            setTasks(JSON.parse(stored));
-        }
-    }, []);
-
-    // Save tasks to localStorage on change
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     }, [tasks]);
 
-    const addTask = (data: {
+    const saveTask = (data: {
+        id?: string;
         title: string;
         priority: TaskPriority;
         status: TaskStatus;
         description: string;
         dueDate: string;
     }) => {
-        const newTask: Task = {
-            id: Date.now().toString(),
-            title: data.title,
-            priority: data.priority,
-            status: data.status,
-            description: data.description,
-            dueDate: data.dueDate,
-        };
-        setTasks((prev) => [...prev, newTask]);
+        if (data.id) {
+            setTasks((prev) =>
+                prev.map((task) => (task.id === data.id ? { ...task, ...data } : task))
+            );
+            setTaskToEdit(null);
+        } else {
+            const newTask: Task = {
+                id: Date.now().toString(),
+                title: data.title,
+                priority: data.priority,
+                status: data.status,
+                description: data.description,
+                dueDate: data.dueDate,
+            };
+            setTasks((prev) => [...prev, newTask]);
+        }
     };
 
     const deleteTask = (id: string) => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
+        if (taskToEdit?.id === id) {
+            setTaskToEdit(null); // Clear edit if deleted
+        }
     };
 
     const handleFilterChange = (filters: { status?: TaskStatus; priority?: TaskPriority }) => {
         setFilter(filters);
     };
 
-    // Filter by status, priority, AND search term
     const filteredTasks = tasks.filter((task) => {
         const statusMatches = filter.status ? task.status === filter.status : true;
         const priorityMatches = filter.priority ? task.priority === filter.priority : true;
-        const searchMatches = task.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const searchMatches =
+            task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            task.description.toLowerCase().includes(searchTerm.toLowerCase());
         return statusMatches && priorityMatches && searchMatches;
     });
+
+    const sortedTasks = [...filteredTasks].sort((a, b) => {
+        if (!sortBy) return 0;
+        if (sortBy === 'dueDate') {
+            if (!a.dueDate) return 1;
+            if (!b.dueDate) return -1;
+            return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        }
+        if (sortBy === 'priority') {
+            const priorityOrder = { low: 1, medium: 2, high: 3 };
+            return priorityOrder[a.priority] - priorityOrder[b.priority];
+        }
+        if (sortBy === 'status') {
+            const statusOrder = { pending: 1, 'in-progress': 2, completed: 3 };
+            return statusOrder[a.status] - statusOrder[b.status];
+        }
+        return 0;
+    });
+
+    // Export tasks as JSON file
+    const handleExport = () => {
+        const dataStr = JSON.stringify(tasks, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tasks.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    // Import tasks from JSON file
+    const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const importedTasks = JSON.parse(event.target?.result as string);
+                if (Array.isArray(importedTasks)) {
+                    setTasks(importedTasks);
+                } else {
+                    alert('Invalid file format.');
+                }
+            } catch {
+                alert('Error parsing JSON file.');
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    };
+
+    const handleEdit = (task: Task) => {
+        setTaskToEdit(task);
+    };
 
     return (
         <div>
             <h1>Task Dashboard</h1>
-
-            <TaskForm onAddTask={addTask} />
-
+            <TaskForm onAddTask={saveTask} taskToEdit={taskToEdit} />
             <TaskFilter onFilterChange={handleFilterChange} />
-
-            {/* Search bar */}
             <input
                 type="text"
                 placeholder="Search tasks..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ marginTop: '1rem', marginBottom: '1rem', padding: '0.5rem', width: '100%' }}
+                style={{ marginTop: '1rem', padding: '0.5rem', width: '100%' }}
             />
+            <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                style={{ marginTop: '1rem' }}
+            >
+                <option value="">Sort By</option>
+                <option value="dueDate">Due Date</option>
+                <option value="priority">Priority</option>
+                <option value="status">Status</option>
+            </select>
 
-            <TaskList tasks={filteredTasks} onDelete={deleteTask} />
+            <div style={{ marginTop: '1rem' }}>
+                <button onClick={handleExport}>Export Tasks</button>
+                <button onClick={() => fileInputRef.current?.click()} style={{ marginLeft: '1rem' }}>
+                    Import Tasks
+                </button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="application/json"
+                    style={{ display: 'none' }}
+                    onChange={handleImport}
+                />
+            </div>
+
+            <TaskList tasks={sortedTasks} onDelete={deleteTask} onEdit={handleEdit} />
         </div>
     );
 };

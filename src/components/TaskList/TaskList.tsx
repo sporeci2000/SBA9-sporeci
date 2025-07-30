@@ -5,7 +5,7 @@ import { TaskItem } from './TaskItem';
 interface TaskListProps {
     tasks: Task[];
     onDelete: (id: string) => void;
-    onEdit: (task: Task) => void; // new prop
+    onEdit: (task: Task) => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => (
