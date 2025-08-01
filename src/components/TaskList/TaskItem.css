@@ -20,14 +20,14 @@ li {
 
 /* Status styles */
 .pending {
-    background-color: #fff3cd;
+    background-color: #7d6001;
 }
 
 .in-progress {
-    background-color: #cce5ff;
+    background-color: #01468f;
 }
 
 .completed {
-    background-color: #d4edda;
+    background-color: #038221;
     text-decoration: line-through;
 }

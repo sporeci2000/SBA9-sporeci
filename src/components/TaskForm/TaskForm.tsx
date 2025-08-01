@@ -79,41 +79,57 @@ export const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, taskToEdit }) => 
     return (
         <form onSubmit={handleSubmit}>
 
-            <input
-                type="text"
-                placeholder="Add title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
 
-            <textarea
-                placeholder="Add description..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
+            <label>
+                Title:
+                <input
+                    type="text"
+                    placeholder="Add title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+            </label>
 
-            <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-            />
+            <label>
+                Description:
+                <textarea
+                    placeholder="Add description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+            </label>
 
-            <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)}>
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
-            </select>
+            <label>
+                Due Date:
+                <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                />
+            </label>
 
-            <select value={status} onChange={(e) => setStatus(e.target.value as TaskStatus)}>
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-            </select>
+            <label>
+                Priority:
+                <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)}>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+            </label>
+
+            <label>
+                Status:
+                <select value={status} onChange={(e) => setStatus(e.target.value as TaskStatus)}>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </label>
 
             <button type="submit">{taskToEdit ? 'Update Task' : 'Add Task'}</button>
 
             {/* Shows error if validation fails */}
-            {error && <p style={{ color: 'red' }}>{error}</p>} 
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
     );
 };

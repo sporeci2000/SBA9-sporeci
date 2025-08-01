@@ -3,6 +3,7 @@ import type { Task, TaskStatus, TaskPriority } from '../../types';
 import { TaskForm } from '../TaskForm/TaskForm';
 import { TaskFilter } from '../TaskFilter/TaskFilter';
 import { TaskList } from '../TaskList/TaskList';
+import './Dashboard.css';
 
 //constant for localStorage key
 const STORAGE_KEY = 'taskManagerTasks';
@@ -165,7 +166,7 @@ export const Dashboard: React.FC = () => {
                     maxWidth: 600,
                     margin: '2rem auto',
                     padding: '1rem',
-                    background: '#f1f1f1',
+                    background: '#4e4e4eff',
                     borderRadius: 8,
                     fontSize: '1rem',
                 }}
