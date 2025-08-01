@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import type { TaskFilter as TaskFilterProps, TaskStatus, TaskPriority } from '../../types';
 
+// Declares a React Functional Component and it takes onFilterChange as a prop
 export const TaskFilter: React.FC<TaskFilterProps> = ({ onFilterChange }) => {
     console.log('Rendering TaskFilter');
     
-    const [status, setStatus] = useState<TaskStatus | ''>('');
-    const [priority, setPriority] = useState<TaskPriority | ''>('');
+    const [status, setStatus] = useState<TaskStatus | ''>(''); //stores currently selected status filte
+    const [priority, setPriority] = useState<TaskPriority | ''>(''); //stores currently selected priority filter
 
+
+    //Status change handler
     const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value as TaskStatus | '';
         setStatus(value);
         onFilterChange({ status: value || undefined, priority: priority || undefined });
     };
 
+
+    //Priority change handler
     const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value as TaskPriority | '';
         setPriority(value);

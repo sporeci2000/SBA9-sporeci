@@ -4,8 +4,10 @@ import { TaskForm } from '../TaskForm/TaskForm';
 import { TaskFilter } from '../TaskFilter/TaskFilter';
 import { TaskList } from '../TaskList/TaskList';
 
+//constant for localStorage key
 const STORAGE_KEY = 'taskManagerTasks';
 
+//State Initialization
 export const Dashboard: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -15,8 +17,10 @@ export const Dashboard: React.FC = () => {
     const [filter, setFilter] = useState<{ status?: TaskStatus; priority?: TaskPriority }>({});
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<'dueDate' | 'priority' | 'status' | ''>('');
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null); //Hidden file input for importing tasks
 
+
+    //Every time tasks changes save them to localStorage
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     }, [tasks]);
@@ -81,6 +85,7 @@ export const Dashboard: React.FC = () => {
     const inProgressTasks = filteredTasks.filter(t => t.status === 'in-progress').length;
 
     // Export tasks as JSON file
+    // Saves tasks as downloadable
     const handleExport = () => {
         const dataStr = JSON.stringify(tasks, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
@@ -93,6 +98,7 @@ export const Dashboard: React.FC = () => {
     };
 
     // Import tasks from JSON file
+    // Loads tasks from uploaded JSON file
     const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;

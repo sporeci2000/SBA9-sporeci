@@ -10,8 +10,12 @@ interface TaskListProps {
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => (
     <ul>
+        {/*Maps through tasks and renders TaskItem for each */}
+
         {tasks.map((task) => (
+
             <TaskItem key={task.id} task={task} onDelete={onDelete} onEdit={onEdit} />
+
         ))}
     </ul>
 );
