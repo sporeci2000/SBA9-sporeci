@@ -9,19 +9,19 @@ Stores the state of the entire task list
 Handles adding, deleting, filtering, sorting, and saving tasks   
 Passes props down to child components  
 
-The TaskForm component:
-Uses useState to manage form inputs
-Validates inputs before submitting
-Calls onAddTask()
+The TaskForm component:   
+Uses useState to manage form inputs   
+Validates inputs before submitting   
+Calls onAddTask()   
 
-The TaskFilter component:
-Stores current filter values (status, priority)
-Calls onFilterChange() when filters change
-Helps users narrow down the task list
+The TaskFilter component:   
+Stores current filter values (status, priority)   
+Calls onFilterChange() when filters change   
+Helps users narrow down the task list   
 
-The TaskList and TaskItem components:
-Take a list of tasks and render each one using .map()
-TaskItem handles delete/edit buttons for each task
+The TaskList and TaskItem components:   
+Take a list of tasks and render each one using .map()   
+TaskItem handles delete/edit buttons for each task   
 
 
 RESOURCES:
