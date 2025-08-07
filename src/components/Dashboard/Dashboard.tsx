@@ -4,6 +4,7 @@ import { TaskForm } from '../TaskForm/TaskForm';
 import { TaskFilter } from '../TaskFilter/TaskFilter';
 import { TaskList } from '../TaskList/TaskList';
 import './Dashboard.css';
+import { filterTasks } from '../../utils/taskUtils';
 
 //constant for localStorage key
 const STORAGE_KEY = 'taskManagerTasks';
@@ -53,14 +54,7 @@ export const Dashboard: React.FC = () => {
         setFilter(filters);
     };
 
-    const filteredTasks = tasks.filter((task) => {
-        const statusMatches = filter.status ? task.status === filter.status : true;
-        const priorityMatches = filter.priority ? task.priority === filter.priority : true;
-        const searchMatches =
-            task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            task.description.toLowerCase().includes(searchTerm.toLowerCase());
-        return statusMatches && priorityMatches && searchMatches;
-    });
+    const filteredTasks = filterTasks(tasks, filter.status, filter.priority, searchTerm);
 
     const sortedTasks = [...filteredTasks].sort((a, b) => {
         if (!sortBy) return 0;
