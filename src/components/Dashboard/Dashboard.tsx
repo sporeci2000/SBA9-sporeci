@@ -85,7 +85,11 @@ export const Dashboard: React.FC = () => {
         setFilter(filters);
     };
 
+    console.log('Current search term:', searchTerm);
+    console.log('Total tasks before filter:', tasks.length);
     const filteredTasks = filterTasks(tasks, filter.status, filter.priority, searchTerm);
+    console.log('Tasks after filter:', filteredTasks.length);
+
 
     const sortedTasks = [...filteredTasks].sort((a, b) => {
         if (!sortBy) return 0;
