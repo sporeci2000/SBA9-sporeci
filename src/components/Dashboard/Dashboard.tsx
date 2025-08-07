@@ -7,7 +7,7 @@ import './Dashboard.css';
 import { filterTasks } from '../../utils/taskUtils';
 
 //constant for localStorage key
-const STORAGE_KEY = 'taskManagerTasks';
+const STORAGE_KEY = 'myTasks';
 
 //State Initialization
 export const Dashboard: React.FC = () => {
@@ -20,6 +20,7 @@ export const Dashboard: React.FC = () => {
     const [filter, setFilter] = useState<{ status?: TaskStatus; priority?: TaskPriority }>({});
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<'dueDate' | 'priority' | 'status' | ''>('');
+    const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null); //Hidden file input for importing tasks
 
 
@@ -48,6 +49,36 @@ export const Dashboard: React.FC = () => {
 
     const deleteTask = (id: string) => {
         setTasks((prev) => prev.filter((task) => task.id !== id));
+    };
+
+    const handleAddOrUpdateTask = (taskData: {
+        id?: string;
+        title: string;
+        priority: TaskPriority;
+        status: TaskStatus;
+        description: string;
+        dueDate: string;
+    }) => {
+        if (taskData.id) {
+            // Update existing task
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task.id === taskData.id ? { ...task, ...taskData } : task
+                )
+            );
+            setTaskToEdit(null); // Clear editing state
+        } else {
+            // Add new task
+            const newTask: Task = {
+                id: Date.now().toString(),
+                title: taskData.title,
+                priority: taskData.priority,
+                status: taskData.status,
+                description: taskData.description,
+                dueDate: taskData.dueDate,
+            };
+            setTasks((prevTasks) => [...prevTasks, newTask]);
+        }
     };
 
     const handleFilterChange = (filters: { status?: TaskStatus; priority?: TaskPriority }) => {
@@ -119,7 +150,7 @@ export const Dashboard: React.FC = () => {
     return (
         <div>
             <h1>Task Dashboard</h1>
-            <TaskForm onAddTask={addTask} />
+            <TaskForm onAddTask={handleAddOrUpdateTask} taskToEdit={taskToEdit} />
             <TaskFilter onFilterChange={handleFilterChange} />
 
             <input
@@ -173,7 +204,8 @@ export const Dashboard: React.FC = () => {
                 <p>In Progress: {inProgressTasks}</p>
             </div>
 
-            <TaskList tasks={sortedTasks} onDelete={deleteTask} onEdit={() => { }} />
+            <TaskList tasks={sortedTasks} onDelete={deleteTask} onEdit={setTaskToEdit} />
+
         </div>
     );
 };

@@ -7,27 +7,27 @@ li {
 
 /* Priority styles */
 .low {
-    border-left: 5px solid green;
+    border: 5px solid green;
 }
 
 .medium {
-    border-left: 5px solid orange;
+    border: 5px solid rgb(253, 152, 0);
 }
 
 .high {
-    border-left: 5px solid red;
+    border: 5px solid red;
 }
 
 /* Status styles */
 .pending {
-    background-color: #7d6001;
+    background-color: #000000;
 }
 
 .in-progress {
-    background-color: #01468f;
+    background-color: #000000;
 }
 
 .completed {
-    background-color: #038221;
+    background-color: #000000;
     text-decoration: line-through;
 }

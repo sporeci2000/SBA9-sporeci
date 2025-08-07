@@ -25,6 +25,8 @@ TaskItem handles delete/edit buttons for each task
 
 
 RESOURCES:
+https://www.arvinpoddar.com/blog/syncing-local-storage-with-react-state?utm_source=chatgpt.com 
+https://legacy.reactjs.org/docs/hooks-reference.html#useref 
 https://react.dev/reference/react/useState 
 https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage 
 https://developer.mozilla.org/en-US/docs/Web/API/FileReader 
@@ -32,4 +34,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components/
 https://react.dev/reference/react/useEffect  
+https://developer.mozilla.org/en-US/docs/Web/API/FileReader 
+https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static 
+https://legacy.reactjs.org/docs/forms.html#handling-multiple-inputs 
 
