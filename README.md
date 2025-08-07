@@ -4,6 +4,26 @@ The project is made with clean, reusable code using components and TypeScript ty
 
 While working on this project, I faced a few challenges. One of the main difficulties was managing the different states in the app, especially when filtering, sorting, and searching tasks all at the same time. It took some time to figure out how to combine all these features in a way that worked smoothly together. I also struggled a bit with TypeScript types at first, especially when passing props between components. Understanding how to use interfaces correctly helped me solve those issues. Another challenge was saving and loading tasks using localStorage, especially when importing tasks from a file and making sure the data was valid. I had to write extra logic to handle errors and keep the app from crashing. Overall, these problems helped me learn more about debugging, organizing my code, and thinking through how components should communicate.
 
+The Dashboard component:   
+Stores the state of the entire task list   
+Handles adding, deleting, filtering, sorting, and saving tasks   
+Passes props down to child components  
+
+The TaskForm component:
+Uses useState to manage form inputs
+Validates inputs before submitting
+Calls onAddTask()
+
+The TaskFilter component:
+Stores current filter values (status, priority)
+Calls onFilterChange() when filters change
+Helps users narrow down the task list
+
+The TaskList and TaskItem components:
+Take a list of tasks and render each one using .map()
+TaskItem handles delete/edit buttons for each task
+
+
 RESOURCES:
 https://react.dev/reference/react/useState 
 https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage 

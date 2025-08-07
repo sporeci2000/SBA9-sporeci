@@ -3,7 +3,7 @@ import type { TaskPriority, TaskStatus, Task } from '../../types';
 
 interface TaskFormProps {
 
-    //function to either add or update a task
+    //function to add or update a task
     onAddTask: (task: {
         id?: string;
         title: string;

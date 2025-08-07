@@ -10,6 +10,7 @@ const STORAGE_KEY = 'taskManagerTasks';
 
 //State Initialization
 export const Dashboard: React.FC = () => {
+    //Store and update the list of tasks
     const [tasks, setTasks] = useState<Task[]>(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
         return saved ? JSON.parse(saved) : [];
